@@ -1,7 +1,11 @@
+import os
+
 from lib.compress import *
+
 
 def processData(dataCompressed):
     data = decompress(dataCompressed)
-    print("Processing data")
     for d in data:
-        print(d, data[d])
+        with open('data/' + str(d) + '.html','w') as f:
+            f.write(data[d])
+        os.system('lzma data/' + str(d) + '.html')

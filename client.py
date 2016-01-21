@@ -3,7 +3,6 @@ import json
 import os
 import time
 import sys
-import random
 
 import requests
 
@@ -13,7 +12,6 @@ def doWork(server, apikey):
     # GET WORK
     r = requests.get(server, {'apikey': apikey})
     data = json.loads(r.text)
-    print(data)
 
     if not data['success']:
         return False
@@ -27,11 +25,17 @@ def doWork(server, apikey):
     payload['rate'] = (time.time() - t0) / float(len(data['work']))
 
     # POST WORK
-    try:
-        r = requests.post(server, data=json.dumps(payload))
-        data = json.loads(r.text)
-    except:
-        return False
+    postSuccess = False
+    while postSuccess == False:
+        try:
+            r = requests.post(server, data=json.dumps(payload))
+            data = json.loads(r.text)
+            print(data)
+            postSuccess = data['success']
+        except:
+            time.sleep(1)
+
+    print(data)
     return True
 
 

@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M')
 
+CHUNK_SIZE = 8
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -65,7 +66,7 @@ def work():
                     state['connected'][apikey]['rate'] = []
                 state['connected'][apikey]['lastSeen'] = time.time()
                 state['connected'][apikey]['lastDoing'] = "GETed work."
-                for chunk in chunks(possible, 8):
+                for chunk in chunks(possible, CHUNK_SIZE):
                     state['connected'][apikey]['work'] = list(chunk)
                     break
                 state['doing'] += state['connected'][apikey]['work']
@@ -82,7 +83,7 @@ if __name__ == '__main__':
     except:
         state = {}
         state['finished'] = []
-    state['todo'] = list(range(8))
+    state['todo'] = list(range(10))
     state['doing'] = []
     state['connected'] = {}
     app.run(port=8001, host='0.0.0.0')
