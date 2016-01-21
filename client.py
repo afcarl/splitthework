@@ -3,10 +3,11 @@ import json
 import os
 import time
 import sys
+import random
 
 import requests
 
-from process import *
+from lib.clientProcessing import *
 
 def doWork(server, apikey):
     # GET WORK
@@ -22,7 +23,6 @@ def doWork(server, apikey):
 
     # RUN PROGRAM
     t0 = time.time()
-    time.sleep(3)
     payload['data'] = processWork(data['work'])
     payload['rate'] = (time.time() - t0) / float(len(data['work']))
 

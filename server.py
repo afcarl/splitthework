@@ -6,7 +6,7 @@ import time
 
 from flask import Flask, jsonify, request
 
-from process import *
+from lib.serverProcessing import *
 
 app = Flask(__name__)
 app.debug = False
@@ -41,6 +41,9 @@ def work():
         state['todo'] = list(set(state['todo']) - set(content['work']))
         state['connected'][apikey]['lastSeen'] = time.time()
         state['connected'][apikey]['lastDoing'] = "POSTed work."
+        state['connected'][apikey]['rate'].append(rate)
+        if len(state['connected'][apikey]['rate']) > 10:
+            state['connected'][apikey]['rate'].pop(0)
     else:  # client gets work from server
         apikey = request.args.get('apikey', '')
         if apikey in state['connected'] and state['connected'][apikey]['lastDoing'] == "GETed work.":
@@ -59,6 +62,7 @@ def work():
                 payload['apikey'] = apikey
                 if apikey not in state['connected']:
                     state['connected'][apikey] = {}
+                    state['connected'][apikey]['rate'] = []
                 state['connected'][apikey]['lastSeen'] = time.time()
                 state['connected'][apikey]['lastDoing'] = "GETed work."
                 for chunk in chunks(possible, 8):
