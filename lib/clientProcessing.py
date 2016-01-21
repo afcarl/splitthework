@@ -1,11 +1,8 @@
-improt time
 from lib.compress import *
+from lib.downloadPages import *
 
 def processWork(data):
-    time.sleep(random.randint(1,4))
-    results = {}
-    for d in data:
-        results[d] = str(open('test.html','r').read())
+    results = downloadPages(data)
     print(sys.getsizeof(json.dumps(results)))
     dataCompressed = compress(results)
     print(sys.getsizeof(dataCompressed))

@@ -82,7 +82,7 @@ if __name__ == '__main__':
     except:
         state = {}
         state['finished'] = []
-    state['todo'] = list(range(100))
+    state['todo'] = list(range(8))
     state['doing'] = []
     state['connected'] = {}
     app.run(port=8001, host='0.0.0.0')
