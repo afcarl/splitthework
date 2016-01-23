@@ -8,7 +8,7 @@ def processWork(data):
         strData.append(str(a))
     os.system("sudo python3 downloadPages.py " + " ".join(strData))
     results = json.load(open('downloadedPages.json','r'))
-    print(sys.getsizeof(json.dumps(results)))
+    # print(sys.getsizeof(json.dumps(results)))
     dataCompressed = compress(results)
-    print(sys.getsizeof(dataCompressed))
+    # print(sys.getsizeof(dataCompressed))
     return dataCompressed

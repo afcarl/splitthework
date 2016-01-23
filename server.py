@@ -13,7 +13,7 @@ app.debug = False
 state = {}
 
 # set up logging to file - see previous section for more details
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(filename='server.log',level=logging.DEBUG,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M')
 
@@ -77,13 +77,24 @@ def work():
         f.write(json.dumps(state))
     return jsonify(**payload)
 
-if __name__ == '__main__':
+def init():
+    global state
     try:
         state = json.load(open('state.json', 'r'))
     except:
         state = {}
         state['finished'] = []
-    state['todo'] = list(range(10))
+    state['todo'] = list(range(1,100))
     state['doing'] = []
     state['connected'] = {}
-    app.run(port=8001, host='0.0.0.0')
+
+init()
+
+if __name__ == '__main__':
+    from tornado.wsgi import WSGIContainer
+    from tornado.httpserver import HTTPServer
+    from tornado.ioloop import IOLoop
+
+    http_server = HTTPServer(WSGIContainer(app))
+    http_server.listen(8119)
+    IOLoop.instance().start()
