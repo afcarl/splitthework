@@ -26,23 +26,24 @@ def doWork(server, apikey):
 
     # POST WORK
     postSuccess = False
+    counter = 0
     while postSuccess == False:
         try:
             r = requests.post(server, data=json.dumps(payload))
             data = json.loads(r.text)
-            print(data)
             postSuccess = data['success']
         except:
-            time.sleep(1)
+            time.sleep(3)
+            counter += 1
+            if counter > 3:
+                return False # if server not responding, then exit
 
-    print(data)
     return True
 
 
 if __name__ == '__main__':
     apikey = str(uuid.uuid4()).replace('-', '')
     server = sys.argv[1]
-    print(server)
     stillWorkToDo = True
     while stillWorkToDo:
         stillWorkToDo = doWork('http://' + server + "/work", apikey)
