@@ -3,6 +3,7 @@ import copy
 from itertools import groupby
 import json
 import time
+import threading
 
 from flask import Flask, jsonify, request
 
@@ -23,6 +24,14 @@ def chunks(l, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
         yield l[i:i + n]
+
+def saveWork():
+    global state
+    logger = logging.getLogger('saveWork')
+    logger.info('Dumping state')
+    with open('state.json', 'w') as f:
+        f.write(json.dumps(state))
+    threading.Timer(360, saveWork).start()
 
 @app.route('/work', methods=['GET', 'POST'])
 def work():
@@ -73,8 +82,6 @@ def work():
                 payload['work'] = state['connected'][apikey]['work']
                 logger.info(payload)
 
-    with open('state.json', 'w') as f:
-        f.write(json.dumps(state))
     return jsonify(**payload)
 
 def init():
@@ -84,9 +91,11 @@ def init():
     except:
         state = {}
         state['finished'] = []
-    state['todo'] = list(range(1,100))
+    state['todo'] = list(range(1,2624376))
     state['doing'] = []
-    state['connected'] = {}
+    if 'connected' not in state:
+        state['connected'] = {}
+    saveWork()
 
 init()
 
@@ -98,3 +107,4 @@ if __name__ == '__main__':
     http_server = HTTPServer(WSGIContainer(app))
     http_server.listen(8119)
     IOLoop.instance().start()
+    # app.run(port=8119, host='0.0.0.0')
