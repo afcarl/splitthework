@@ -19,14 +19,14 @@ logging.basicConfig(filename='downloadPages.log',level=logging.DEBUG,
 
 CHUNK_SIZE = 4
 
-# def getURL(num):
-#     lineNum = 0
-#     with open("sitemap/URLS.txt",'r') as f:
-#         for line in f:
-#             lineNum += 1
-#             if lineNum == num:
-#                 return line.strip()
-#     raise
+def getURL(num):
+    lineNum = 0
+    with open("sitemap/URLS.txt",'r') as f:
+        for line in f:
+            lineNum += 1
+            if lineNum == num:
+                return line.strip()
+    raise
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -37,7 +37,8 @@ def chunks(l, n):
 def downloadPage(num):
     logger = logging.getLogger('downloadPage')
     try:
-         r = requests.get('http://whatsmyip.net/', headers=headers, timeout=10)
+        r = requests.get(getURL(num), headers=headers)
+        #r = requests.get('http://whatsmyip.net/', headers=headers, timeout=10)
         html_text = r.text
         if r.status_code != 200:
             raise
