@@ -22,4 +22,5 @@ def processData(dataCompressed):
         datas.append((d,data[d]))
     p = Pool(8)
     p.map(saveData,datas)
-    p.terminate()
+    p.close()
+    p.join()
